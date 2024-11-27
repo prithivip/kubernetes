@@ -1,0 +1,8 @@
+[master]
+kmaster
+
+[workers]
+knode1
+
+[proxy-servers]
+proxy
