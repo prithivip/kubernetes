@@ -7,13 +7,18 @@
 
 
 This setup requires 
+
 Ansible Control Node with version 2.1.14 and above
+
 Proxy Machine [Linux box with kubectl, python, kube config)
+
 Kubernetes cluster [On-prem or Cloud provider]
+
 Password SSH login between Ansible Control Node and Proxy Machine
 
 
 On Ansible Control Node :
+
 sudo apt update && sudo apt upgrade –y
 
 ansible-galaxy collection install kubernetes.core:4.0.0
