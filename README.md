@@ -73,6 +73,7 @@ Create Inventory /root/ansible/kube_inventory
 
 10.x.x.x
 
+You can download playbook at (https://github.com/prithivip/kubernetes.git)
 ansible-playbook ~/ansible/playbook/kube_dependencies.yml -i ~/ansible/inventory/kube_inventory
 
 ansible-playbook ~/ansible/playbook/kube_master.yml -i ~/ansible/inventory/kube_inventory
