@@ -1,6 +1,7 @@
 # kubernetes
+![image](https://github.com/user-attachments/assets/8682bbc7-5e62-435e-a36a-3ef391b25208)
 
-![image](https://github.com/user-attachments/assets/596da7f6-0b63-4367-a4ab-79cd265662bd)
+
 
 This setup requires 
 Ansible Control Node with version 2.1.14 and above
