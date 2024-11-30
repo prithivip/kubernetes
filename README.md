@@ -1,5 +1,8 @@
 # kubernetes
-![image](https://github.com/user-attachments/assets/8682bbc7-5e62-435e-a36a-3ef391b25208)
+
+![image](https://github.com/user-attachments/assets/566d970b-3af5-4782-a77a-d29d46761e0d)
+
+
 
 
 
