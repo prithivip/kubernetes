@@ -119,3 +119,8 @@ EOF
 curl https://knode.chickenkiller.com -v
 
 
+By default, SSL gets terminated in ingress the controller
+
+So all the traffic from the controller to the pod will be without TLS (decrypted traffic)
+
+If you want full SSL, you can add the supported annotation by the ingress controller you are using. For example, In the Nginx ingress controller, to allow SSL traffic till the application, you can use the nginx.ingress.kubernetes.io/backend-protocol: "HTTPS" annotation. For this, your application should have SSL configured.
