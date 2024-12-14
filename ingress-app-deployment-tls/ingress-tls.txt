@@ -1,0 +1,121 @@
+Create a domain called knode.chickenkiller.com
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.0/deploy/static/provider/cloud/deploy.yaml
+
+kubectl get pods --namespace ingress-nginx
+
+kubectl get service ingress-nginx-controller --namespace=ingress-nginx
+
+Update your External LB IP address or GCP External IP address
+
+kubectl create ns ingress-test-app
+
+kubectl create configmap nginx-html --from-literal=index.html='<html><body><h1>This is devoriales.local</h1></body></html>' -n ingress-test-app --dry-run=client -o yaml | kubectl apply -f -
+
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: ingress-test-app
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html-volume
+        configMap:
+          name: nginx-html
+EOF
+
+
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-app-service
+  namespace: ingress-test-app
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+EOF
+
+
+cat <<EOF | kubectl apply -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: http-ingress
+  namespace: ingress-test-app
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: knode.chickenkiller.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ingress-app-service
+            port:
+              number: 80
+EOF
+
+curl http://knode.chickenkiller.com -v
+
+Enable TLS :
+
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=knode.chickenkiller.com/O=knode.chickenkiller.com"
+
+kubectl create secret tls ingress-app-tls --cert=tls.crt --key=tls.key -n ingress-test-app
+
+
+cat <<EOF | kubectl apply -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: http-ingress
+  namespace: ingress-test-app
+spec:
+  ingressClassName: nginx  
+  tls:
+  - hosts:
+    - knode.chickenkiller.com
+    secretName: ingress-app-tls
+  rules:
+  - host: knode.chickenkiller.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ingress-app-service
+            port:
+              number: 80
+EOF
+
+
+curl https://knode.chickenkiller.com -v
+
+
